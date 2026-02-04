@@ -2,7 +2,10 @@
   "name": "backend",
   "module": "index.ts",
   "type": "module",
-  "private": true,
+  "scripts": {
+    "start": "node start.cjs",
+    "dev": "nodemon start.cjs"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "nodemon": "^3.1.11"
