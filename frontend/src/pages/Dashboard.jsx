@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../services/api"
+import DeleteConfirmModal from "../components/DeleteConfirmModal"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
     const [logs, setLogs] = useState([])
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, logId: null, logTitle: "" })
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -32,6 +34,27 @@ export default function Dashboard() {
     const handleLogout = () => {
         localStorage.removeItem("token")
         navigate("/")
+    }
+
+    const handleDelete = async (logId) => {
+        try {
+            await api.delete(`/logs/${logId}`)
+            setLogs(logs.filter(log => log._id !== logId))
+            // Refresh stats
+            const statsRes = await api.get("/logs/stats")
+            setStats(statsRes.data)
+        } catch (error) {
+            console.error("Failed to delete log:", error)
+            alert("Failed to delete log")
+        }
+    }
+
+    const openDeleteModal = (logId, logTitle) => {
+        setDeleteModal({ isOpen: true, logId, logTitle })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({ isOpen: false, logId: null, logTitle: "" })
     }
 
     if (!stats) return <div className="loading">Loading...</div>
@@ -91,10 +114,33 @@ export default function Dashboard() {
                                     {log.notes}
                                 </div>
                             )}
+                            <div className="log-actions" style={{ marginTop: "12px", display: "flex", gap: "8px" }}>
+                                <button
+                                    onClick={() => navigate(`/edit-log/${log._id}`)}
+                                    className="btn btn-primary"
+                                    style={{ padding: "6px 12px", fontSize: "0.875rem" }}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    onClick={() => openDeleteModal(log._id, log.title)}
+                                    className="btn btn-danger"
+                                    style={{ padding: "6px 12px", fontSize: "0.875rem" }}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>
             </div>
+
+            <DeleteConfirmModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={() => handleDelete(deleteModal.logId)}
+                logTitle={deleteModal.logTitle}
+            />
         </div>
     )
 }
