@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../services/api"
 import DeleteConfirmModal from "../components/DeleteConfirmModal"
+import StreakCard from "../components/StreakCard"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
@@ -78,6 +79,8 @@ export default function Dashboard() {
                     <div className="stat-label">Total Problems</div>
                     <div className="stat-value">{stats.total}</div>
                 </div>
+
+                <StreakCard />
 
                 {Object.entries(stats.difficulty || {}).map(([difficulty, count]) => (
                     <div key={difficulty} className="stat-card">

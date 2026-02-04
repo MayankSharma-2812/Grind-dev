@@ -499,6 +499,94 @@ body {
   outline-offset: 2px;
 }
 
+/* Streak Card Styles */
+.streak-card {
+  background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+  color: white;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.streak-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-30%, -30%);
+  }
+}
+
+.streak-value {
+  font-size: 3.5rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.streak-message {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 8px 0;
+  opacity: 0.9;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.longest-streak {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin: 4px 0 0 0;
+}
+
+.streak-number {
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+/* Streak card hover effect */
+.streak-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Responsive adjustments for streak */
+@media (max-width: 768px) {
+  .streak-value {
+    font-size: 2.5rem;
+  }
+
+  .streak-message {
+    font-size: 0.75rem;
+  }
+}
+
 .log-actions {
   margin-top: 12px;
   display: flex;

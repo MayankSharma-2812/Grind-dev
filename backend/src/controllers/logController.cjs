@@ -63,4 +63,53 @@ const getStats = async (req, res) => {
   }
 };
 
-module.exports = { createLog, getLogs, deleteLog, getStats, updateLog };
+const getStreak = async (req, res) => {
+  try {
+    const logs = await Log.find({ userId: req.userId }).sort({ date: -1 });
+
+    if (logs.length === 0) {
+      return res.json({ currentStreak: 0, longestStreak: 0 });
+    }
+
+    const dates = logs.map(log => new Date(log.date).toDateString());
+    const uniqueDates = [...new Set(dates)];
+
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let tempStreak = 0;
+
+    const today = new Date().toDateString();
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+    // Check if there's a log for today or yesterday to continue streak
+    if (uniqueDates[0] === today || uniqueDates[0] === yesterday) {
+      currentStreak = 1;
+      tempStreak = 1;
+
+      for (let i = 1; i < uniqueDates.length; i++) {
+        const currentDate = new Date(uniqueDates[i - 1]);
+        const prevDate = new Date(uniqueDates[i]);
+        const dayDiff = Math.floor((currentDate - prevDate) / (1000 * 60 * 60 * 24));
+
+        if (dayDiff === 1) {
+          tempStreak++;
+          if (i === 1 || uniqueDates[0] === today) {
+            currentStreak++;
+          }
+        } else {
+          longestStreak = Math.max(longestStreak, tempStreak);
+          tempStreak = 1;
+          if (i > 1) break; // Break if streak is broken for current streak
+        }
+      }
+    }
+
+    longestStreak = Math.max(longestStreak, tempStreak);
+
+    res.json({ currentStreak, longestStreak });
+  } catch (error) {
+    res.status(500).json("Error calculating streak");
+  }
+};
+
+module.exports = { createLog, getLogs, deleteLog, getStats, updateLog, getStreak };
