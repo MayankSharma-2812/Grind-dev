@@ -1,19 +1,22 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../services/api"
+import { LoadingButton } from "../components/LoadingStates"
+import { useApi } from "../hooks/useApi"
 
 export default function Register() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate()
+    const { execute: register, loading, error } = useApi()
 
     const submit = async () => {
         try {
-            await api.post("/auth/register", { name, email, password })
+            await register(() => api.post("/auth/register", { name, email, password }))
             navigate("/")
         } catch (error) {
-            alert("Registration failed")
+            // Error is handled by useApi hook
         }
     }
 
@@ -31,6 +34,7 @@ export default function Register() {
                             onChange={e => setName(e.target.value)}
                             className="form-input"
                             required
+                            disabled={loading}
                         />
                     </div>
                     <div className="form-group">
@@ -42,6 +46,7 @@ export default function Register() {
                             onChange={e => setEmail(e.target.value)}
                             className="form-input"
                             required
+                            disabled={loading}
                         />
                     </div>
                     <div className="form-group">
@@ -53,11 +58,22 @@ export default function Register() {
                             onChange={e => setPassword(e.target.value)}
                             className="form-input"
                             required
+                            disabled={loading}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                        </div>
+                    )}
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary"
+                        loading={loading}
+                        disabled={!name || !email || !password}
+                    >
                         Register
-                    </button>
+                    </LoadingButton>
                 </form>
                 <div className="auth-links">
                     <p>Already have an account? <a href="/">Login</a></p>

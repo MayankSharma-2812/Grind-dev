@@ -29,6 +29,18 @@ export default function StreakCard() {
     )
   }
 
+  if (streak.currentStreak === 0 && streak.longestStreak === 0) {
+    return (
+      <div className="stat-card">
+        <div className="stat-label">Current Streak</div>
+        <div className="empty-streak">
+          <div className="empty-streak-icon">🔥</div>
+          <div className="empty-streak-text">Start your streak!</div>
+        </div>
+      </div>
+    )
+  }
+
   const getStreakEmoji = (days) => {
     if (days === 0) return "🔥"
     if (days >= 30) return "🔥🔥🔥"

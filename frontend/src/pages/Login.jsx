@@ -1,19 +1,22 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import api from "../services/api"
+import { LoadingButton } from "../components/LoadingStates"
+import { useApi } from "../hooks/useApi"
 
 export default function Login() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate()
+    const { execute: login, loading, error } = useApi()
 
     const submit = async () => {
         try {
-            const res = await api.post("/auth/login", { email, password })
-            localStorage.setItem("token", res.data.token)
+            const res = await login(() => api.post("/auth/login", { email, password }))
+            localStorage.setItem("token", res.token)
             navigate("/dashboard")
         } catch (error) {
-            alert("Login failed")
+            // Error is handled by useApi hook
         }
     }
 
@@ -31,6 +34,7 @@ export default function Login() {
                             onChange={e => setEmail(e.target.value)}
                             className="form-input"
                             required
+                            disabled={loading}
                         />
                     </div>
                     <div className="form-group">
@@ -42,11 +46,22 @@ export default function Login() {
                             onChange={e => setPassword(e.target.value)}
                             className="form-input"
                             required
+                            disabled={loading}
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">
+                    {error && (
+                        <div className="error-message">
+                            {error}
+                        </div>
+                    )}
+                    <LoadingButton
+                        type="submit"
+                        className="btn btn-primary"
+                        loading={loading}
+                        disabled={!email || !password}
+                    >
                         Login
-                    </button>
+                    </LoadingButton>
                 </form>
                 <div className="auth-links">
                     <p>Don't have an account? <a href="/register">Register</a></p>

@@ -29,6 +29,18 @@ export default function LongestStreakCard() {
     )
   }
 
+  if (streak.longestStreak === 0) {
+    return (
+      <div className="stat-card">
+        <div className="stat-label">Longest Streak</div>
+        <div className="empty-streak">
+          <div className="empty-streak-icon">🏆</div>
+          <div className="empty-streak-text">No record yet</div>
+        </div>
+      </div>
+    )
+  }
+
   const getLongestStreakEmoji = (days) => {
     if (days === 0) return "🏆"
     if (days >= 100) return "🏆🏆🏆🏆"

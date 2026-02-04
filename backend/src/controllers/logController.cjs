@@ -68,7 +68,7 @@ const getStreak = async (req, res) => {
     const logs = await Log.find({ userId: req.userId }).sort({ date: -1 });
 
     if (logs.length === 0) {
-      return res.json({ currentStreak: 0, longestStreak: 0 });
+      return res.json({ currentStreak: 0, longestStreak: 0, missedDays: [], lastMissedDay: null });
     }
 
     const dates = logs.map(log => new Date(log.date).toDateString());
@@ -77,6 +77,8 @@ const getStreak = async (req, res) => {
     let currentStreak = 0;
     let longestStreak = 0;
     let tempStreak = 0;
+    let missedDays = [];
+    let lastMissedDay = null;
 
     const today = new Date().toDateString();
     const yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -96,17 +98,42 @@ const getStreak = async (req, res) => {
           if (i === 1 || uniqueDates[0] === today) {
             currentStreak++;
           }
-        } else {
+        } else if (dayDiff > 1) {
+          // Record missed days
+          for (let j = 1; j < dayDiff; j++) {
+            const missedDate = new Date(prevDate);
+            missedDate.setDate(missedDate.getDate() + j);
+            missedDays.push(missedDate.toDateString());
+            if (!lastMissedDay) {
+              lastMissedDay = missedDate.toDateString();
+            }
+          }
+
           longestStreak = Math.max(longestStreak, tempStreak);
           tempStreak = 1;
           if (i > 1) break; // Break if streak is broken for current streak
         }
       }
+    } else {
+      // Check for missed days from today/yesterday to the last log
+      const lastLogDate = new Date(uniqueDates[0]);
+      const checkDate = uniqueDates[0] === yesterday ? new Date() : new Date(Date.now() - 86400000);
+
+      while (checkDate > lastLogDate) {
+        missedDays.push(checkDate.toDateString());
+        if (!lastMissedDay) {
+          lastMissedDay = checkDate.toDateString();
+        }
+        checkDate.setDate(checkDate.getDate() - 1);
+      }
     }
 
     longestStreak = Math.max(longestStreak, tempStreak);
 
-    res.json({ currentStreak, longestStreak });
+    // Limit missed days to last 30 for performance
+    missedDays = missedDays.slice(0, 30);
+
+    res.json({ currentStreak, longestStreak, missedDays, lastMissedDay });
   } catch (error) {
     res.status(500).json("Error calculating streak");
   }
