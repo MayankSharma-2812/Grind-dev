@@ -5,8 +5,13 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null)
 
   useEffect(() => {
-    api.get("/logs/stats").then(res => setStats(res.data))
-  }, [])
+  if (!localStorage.getItem("token")) {
+    location.href = "/"
+    return
+  }
+  api.get("/logs/stats").then(res => setStats(res.data))
+}, [])
+
 
   if (!stats) return null
 
