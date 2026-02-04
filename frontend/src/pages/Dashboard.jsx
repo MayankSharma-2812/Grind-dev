@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import api from "../services/api"
 import DeleteConfirmModal from "../components/DeleteConfirmModal"
 import StreakCard from "../components/StreakCard"
+import LongestStreakCard from "../components/LongestStreakCard"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
@@ -81,6 +82,7 @@ export default function Dashboard() {
                 </div>
 
                 <StreakCard />
+                <LongestStreakCard />
 
                 {Object.entries(stats.difficulty || {}).map(([difficulty, count]) => (
                     <div key={difficulty} className="stat-card">
