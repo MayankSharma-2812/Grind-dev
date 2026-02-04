@@ -10,6 +10,7 @@ import { EmptyDashboard, EmptyLogs, EmptyCharts } from "../components/EmptyState
 import { SkeletonCard, SkeletonChart, SkeletonLogCard, FullPageLoader } from "../components/LoadingStates"
 import ErrorBoundary from "../components/ErrorBoundary"
 import { useApi } from "../hooks/useApi"
+import ThemeToggle from "../components/ThemeToggle"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
@@ -74,9 +75,10 @@ export default function Dashboard() {
                 <div className="dashboard-header">
                     <h1 className="dashboard-title">Problem Solving Dashboard</h1>
                     <div className="dashboard-actions">
-                        <button className="btn btn-success" disabled>
+                        <button onClick={() => navigate("/add-log")} className="btn btn-success">
                             Add Problem
                         </button>
+                        <ThemeToggle />
                         <button onClick={handleLogout} className="btn btn-danger">
                             Logout
                         </button>
@@ -127,6 +129,7 @@ export default function Dashboard() {
                         <button onClick={() => navigate("/add-log")} className="btn btn-success">
                             Add Problem
                         </button>
+                        <ThemeToggle />
                         <button onClick={handleLogout} className="btn btn-danger">
                             Logout
                         </button>
