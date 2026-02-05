@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard"
 import Register from "./pages/Register"
 import AddLog from "./pages/AddLog"
 import EditLog from "./pages/EditLog"
+import PublicProfile from "./pages/PublicProfile"
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/add-log" element={<AddLog />} />
         <Route path="/edit-log/:id" element={<EditLog />} />
+        <Route path="/profile/:username" element={<PublicProfile />} />
       </Routes>
     </BrowserRouter>
   )

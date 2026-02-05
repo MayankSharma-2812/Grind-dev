@@ -11,6 +11,9 @@ import { SkeletonCard, SkeletonChart, SkeletonLogCard, FullPageLoader } from "..
 import ErrorBoundary from "../components/ErrorBoundary"
 import { useApi } from "../hooks/useApi"
 import ThemeToggle from "../components/ThemeToggle"
+import ExportButtons from "../components/ExportButtons"
+import WeeklySummary from "../components/WeeklySummary"
+import GitHubSync from "../components/GitHubSync"
 
 export default function Dashboard() {
     const [stats, setStats] = useState(null)
@@ -158,6 +161,16 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+
+                        <div className="dashboard-secondary">
+                            <div className="secondary-left">
+                                <WeeklySummary />
+                                <ExportButtons />
+                            </div>
+                            <div className="secondary-right">
+                                <GitHubSync />
+                            </div>
                         </div>
 
                         {hasNoLogs ? (
